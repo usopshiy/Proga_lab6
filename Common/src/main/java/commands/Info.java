@@ -16,7 +16,7 @@ public class Info implements Command{
     }
 
     @Override
-    public void execute(String arg) throws CommandException, InvalidDataException {
+    public void execute(Object arg) throws CommandException, InvalidDataException {
         collectionHandler.info();
     }
 

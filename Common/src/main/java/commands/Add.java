@@ -2,6 +2,7 @@ package commands;
 
 import collection.RouteCollectionHandler;
 import connection.RequestMsg;
+import data.Route;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
 import io.InputHandler;
@@ -20,8 +21,14 @@ public class Add implements  Command {
         this.inputHandler = inputHandler;
     }
     @Override
-    public void execute(String arg) throws CommandException, InvalidDataException {
-        collectionHandler.add(inputHandler.readRoute());
+    public void execute(Object arg) throws CommandException, InvalidDataException {
+        if(arg != null && arg.getClass().equals(Route.class)) {
+            collectionHandler.add((Route)arg);
+        }
+        else {
+            assert collectionHandler != null;
+            collectionHandler.add(inputHandler.readRoute());
+        }
     }
 
     @Override

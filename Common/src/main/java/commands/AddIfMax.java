@@ -24,16 +24,19 @@ public class AddIfMax implements Command{
     }
 
     @Override
-    public void execute(String arg) throws CommandException, InvalidDataException {
-        Route route = inputHandler.readRoute();
-        boolean isMax = true;
-        for(Route routech : collectionHandler.getCollection()){
-            if (route.compareTo(routech) <= 0) {
-                isMax = false;
-                break;
-            }
+    public void execute(Object arg) throws CommandException, InvalidDataException {
+        Route route = null;
+        if(arg != null && arg.getClass().equals(Route.class)) {
+            route = (Route) arg;
         }
-        if(isMax){
+        else {
+            route = inputHandler.readRoute();
+        }
+        Route finalRoute = route;
+        long count = collectionHandler.getCollection().stream()
+                .filter(s -> finalRoute.compareTo(s) <= 0)
+                .count();
+        if (count == 0){
             collectionHandler.add(route);
         }
     }

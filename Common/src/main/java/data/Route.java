@@ -9,7 +9,7 @@ public class Route implements Comparable<Route>, Serializable {
     private UUID id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private final String name; //Поле не может быть null, Строка не может быть пустой
     private final Coordinates coordinates; //Поле не может быть null
-    private final java.util.Date creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
+    private java.util.Date creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     private final Location from; //Поле не может быть null
     private final Location to; //Поле не может быть null
     private final Double distance; //Поле может быть null, Значение поля должно быть больше 1
@@ -25,6 +25,10 @@ public class Route implements Comparable<Route>, Serializable {
     }
     public UUID getId() {
         return id;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public void setId(UUID id){

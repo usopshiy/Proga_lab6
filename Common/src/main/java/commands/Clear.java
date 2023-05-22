@@ -17,7 +17,7 @@ public class Clear implements Command {
         this.collectionHandler = collectionHandler;
     }
     @Override
-    public void execute(String arg) throws CommandException, InvalidDataException {
+    public void execute(Object arg) throws CommandException, InvalidDataException {
         collectionHandler.clear();
     }
 

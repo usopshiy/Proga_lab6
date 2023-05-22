@@ -24,9 +24,9 @@ public class UpdateByID implements Command{
     }
 
     @Override
-    public void execute(String arg) throws CommandException, InvalidDataException {
-        if (collectionHandler.validateID(arg)) {
-            UUID id = UUID.fromString(arg);
+    public void execute(Object arg) throws CommandException, InvalidDataException {
+        if (collectionHandler.validateID((String) arg)) {
+            UUID id = UUID.fromString((String) arg);
             if (collectionHandler.getCollection().isEmpty()) {
                 throw new CommandException("collection is empty!");
             }

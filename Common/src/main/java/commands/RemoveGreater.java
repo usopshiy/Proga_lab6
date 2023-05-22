@@ -21,9 +21,16 @@ public class RemoveGreater implements Command {
         this.collectionHandler = collectionHandler;
     }
     @Override
-    public void execute(String arg) throws CommandException, InvalidDataException {
-        Route route = inputHandler.readRoute();
-        collectionHandler.getCollection().removeIf(routech -> routech.compareTo(route) > 0);
+    public void execute(Object arg) throws CommandException, InvalidDataException {
+        Route route = null;
+        if(arg != null && arg.getClass().equals(Route.class)) {
+            route = (Route) arg;
+        }
+        else {
+            route = inputHandler.readRoute();
+        }
+        Route finalRoute = route;
+        collectionHandler.getCollection().removeIf(s -> s.compareTo(finalRoute) > 0);
     }
 
     @Override

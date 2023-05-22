@@ -14,10 +14,9 @@ public class Help implements Command{
     }
 
     @Override
-    public void execute(String arg) throws CommandException, InvalidDataException {
-        for(String key : map.keySet()){
-            map.get(key).outDescription();
-        }
+    public void execute(Object arg) throws CommandException, InvalidDataException {
+        map.keySet()
+                .forEach(s -> map.get(s).outDescription());
     }
 
     @Override

@@ -17,7 +17,7 @@ public class GroupCountingByFrom implements Command{
     }
 
     @Override
-    public void execute(String arg) throws CommandException, InvalidDataException {
+    public void execute(Object arg) throws CommandException, InvalidDataException {
         if (collectionHandler.getCollection().isEmpty()) {
             throw new CommandException("collection is empty!");
         }

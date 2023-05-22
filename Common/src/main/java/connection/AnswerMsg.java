@@ -1,6 +1,9 @@
 package connection;
 
-public class AnswerMsg {
+import java.io.IOException;
+import java.io.Serializable;
+
+public class AnswerMsg implements Serializable {
     private static final long serialVersionUID = 420;
     private String msg;
 

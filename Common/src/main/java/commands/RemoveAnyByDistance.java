@@ -18,11 +18,11 @@ public class RemoveAnyByDistance implements Command{
     }
 
     @Override
-    public void execute(String arg) throws CommandException, InvalidDataException {
+    public void execute(Object arg) throws CommandException, InvalidDataException {
         Double dist = (double) 0;
         if(arg != null) {
             try {
-                dist = Double.parseDouble(arg);
+                dist = Double.parseDouble((String) arg);
             } catch (IllegalArgumentException e) {
                 throw new InvalidDataException("invalid argument");
             }
