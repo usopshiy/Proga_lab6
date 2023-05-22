@@ -1,8 +1,9 @@
 package data;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Location {
+public class Location implements Serializable {
     private final Integer x; //Поле не может быть null
     private final Double y; //Поле не может быть null
 

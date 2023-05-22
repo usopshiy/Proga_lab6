@@ -1,10 +1,11 @@
 package data;
 
+import java.io.Serializable;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
 
-public class Route implements Comparable<Route>{
+public class Route implements Comparable<Route>, Serializable {
     private UUID id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private final String name; //Поле не может быть null, Строка не может быть пустой
     private final Coordinates coordinates; //Поле не может быть null
