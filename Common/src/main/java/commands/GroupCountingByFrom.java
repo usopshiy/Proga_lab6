@@ -7,6 +7,10 @@ import static utils.ConsoleColors.*;
 public class GroupCountingByFrom implements Command{
     private final RouteCollectionHandler collectionHandler;
 
+    public GroupCountingByFrom() {
+        collectionHandler = null;
+    }
+
     public GroupCountingByFrom(RouteCollectionHandler collectionHandler) {
         this.collectionHandler = collectionHandler;
     }

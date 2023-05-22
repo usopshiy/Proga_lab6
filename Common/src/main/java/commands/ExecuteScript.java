@@ -1,5 +1,6 @@
 package commands;
 
+import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
 import io.UserInputHandler;
@@ -22,5 +23,10 @@ public class ExecuteScript implements Command{
     public void outDescription() {
         System.out.println(setColor(GREEN_BOLD_BRIGHT, "execute_script ") + setColor(PURPLE_BRIGHT, "file ") +
                 "- " + setColor(BLUE_BRIGHT, "execute script from file"));
+    }
+
+    @Override
+    public RequestMsg makeRequest(String arg) throws InvalidDataException {
+        return new RequestMsg("execute_script", arg, null);
     }
 }

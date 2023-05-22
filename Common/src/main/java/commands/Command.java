@@ -1,4 +1,5 @@
 package commands;
+import connection.RequestMsg;
 import exceptions.*;
 
 /**
@@ -17,4 +18,6 @@ public interface Command {
       * method that gives description of command
       */
      void outDescription();
+
+     RequestMsg makeRequest(String arg) throws InvalidDataException;
 }

@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.RequestMsg;
 import data.Route;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
@@ -11,6 +12,11 @@ import java.util.UUID;
 public class UpdateByID implements Command{
     private  final RouteCollectionHandler collectionHandler;
     private final InputHandler inputHandler;
+
+    public UpdateByID(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
+        collectionHandler = null;
+    }
 
     public UpdateByID(RouteCollectionHandler collectionHandler, InputHandler inputHandler) {
         this.collectionHandler = collectionHandler;
@@ -38,5 +44,10 @@ public class UpdateByID implements Command{
     public void outDescription() {
         System.out.println(setColor(GREEN_BOLD_BRIGHT, "update_by_id ") + setColor(PURPLE_BRIGHT, "{element} ") + "- " +
                 setColor(BLUE_BRIGHT, "updates route with given id"));
+    }
+
+    @Override
+    public RequestMsg makeRequest(String arg) throws InvalidDataException {
+        return new RequestMsg("update_by_id", arg, null);
     }
 }

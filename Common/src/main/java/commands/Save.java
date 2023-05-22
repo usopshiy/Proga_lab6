@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
 import file.FileHandler;
@@ -26,5 +27,10 @@ public class Save implements Command{
     public void outDescription() {
         System.out.println(setColor(GREEN_BOLD_BRIGHT, "save ")  + setColor(PURPLE_BRIGHT, "file") +
                 "- " + setColor(BLUE_BRIGHT, "saves collection into file"));
+    }
+
+    @Override
+    public RequestMsg makeRequest(String arg) throws InvalidDataException {
+        return new RequestMsg("save", arg, null);
     }
 }

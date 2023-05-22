@@ -1,5 +1,6 @@
 package commands;
 
+import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
 
@@ -23,5 +24,10 @@ public class Help implements Command{
     public void outDescription() {
         System.out.println(setColor(GREEN_BOLD_BRIGHT, "help ")  +
                 "- " + setColor(BLUE_BRIGHT, "shows available commands and their description"));
+    }
+
+    @Override
+    public RequestMsg makeRequest(String arg) throws InvalidDataException {
+        return new RequestMsg("help", arg, null);
     }
 }
