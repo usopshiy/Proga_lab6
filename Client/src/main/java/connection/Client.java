@@ -12,7 +12,6 @@ import java.nio.ByteBuffer;
 public class Client extends Thread implements Closeable {
     private SocketAddress address;
     private DatagramSocket socket;
-    private final int BUFFER_SIZE = 2^16;
     private boolean isRunning;
     private ClientUserInputHandler handler;
 
@@ -54,7 +53,6 @@ public class Client extends Thread implements Closeable {
             DatagramPacket requestPacket = new DatagramPacket(byteArrayOutputStream.toByteArray(), byteArrayOutputStream.size(), address);
             socket.send(requestPacket);
             byteArrayOutputStream.close();
-            System.out.println("sended");
         }
         catch (IOException e){
             throw new ConnectionException("cannot send request");

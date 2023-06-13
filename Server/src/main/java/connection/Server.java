@@ -11,8 +11,6 @@ import java.nio.channels.*;
 import java.nio.*;
 import java.time.Instant;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
 import exceptions.InvalidDataException;
 import exceptions.ServerException;
 import file.FileHandler;
@@ -48,7 +46,6 @@ public class Server extends Thread implements Closeable{
             }
             channel = DatagramChannel.open();
             channel.bind(new InetSocketAddress(port));
-            System.out.println(InetAddress.getLocalHost());
         }
         catch(AlreadyBoundException e){
             throw new ServerException("port is already bound");
