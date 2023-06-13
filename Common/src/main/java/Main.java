@@ -31,7 +31,5 @@ public class Main {
             collectionHandler.deserializeCollection(fileHandler.read());
         }
         InputHandler inputHandler = new ConsoleInputHandler();
-        UserInputHandler userInputHandler = new UserInputHandler(collectionHandler, fileHandler, inputHandler);
-        userInputHandler.consoleMode();
     }
 }

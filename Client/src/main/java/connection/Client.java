@@ -8,7 +8,8 @@ import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 
-public class Client extends Thread {
+
+public class Client extends Thread implements Closeable {
     private SocketAddress address;
     private DatagramSocket socket;
     private final int BUFFER_SIZE = 2^16;
@@ -16,11 +17,14 @@ public class Client extends Thread {
     private ClientUserInputHandler handler;
 
 
-    public Client(String addr, int port) throws ConnectionException {
-        connect(addr, port);
+    private void init(String addr, int p) throws ConnectionException {
+        connect(addr,p);
         isRunning = true;
         handler = new ClientUserInputHandler(this);
         setName("client thread");
+    }
+    public Client(String addr, int port) throws ConnectionException {
+        init(addr, port);
     }
 
     public void connect(String addr, int port) throws ConnectionException {
@@ -33,23 +37,24 @@ public class Client extends Thread {
         catch(IllegalArgumentException e){
             throw new ConnectionException("Invalid port");
         }
-        try{
+        try {
             socket = new DatagramSocket();
-            int MAX_TIME_OUT = 100;
-            socket.setSoTimeout(MAX_TIME_OUT);
-        } catch(IOException e){
+            socket.setSoTimeout(500);
+        } catch (IOException e) {
             throw new ConnectionException("cannot open socket");
         }
+        System.out.println("connected!");
     }
 
-    public void send(RequestMsg request) throws ConnectionException {
+    public void send(Request request) throws ConnectionException {
         try{
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(BUFFER_SIZE);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objOutput = new ObjectOutputStream(byteArrayOutputStream);
             objOutput.writeObject(request);
             DatagramPacket requestPacket = new DatagramPacket(byteArrayOutputStream.toByteArray(), byteArrayOutputStream.size(), address);
             socket.send(requestPacket);
             byteArrayOutputStream.close();
+            System.out.println("sended");
         }
         catch (IOException e){
             throw new ConnectionException("cannot send request");
@@ -57,7 +62,7 @@ public class Client extends Thread {
     }
 
     public AnswerMsg receive() throws ConnectionException, InvalidDataException {
-        ByteBuffer bytes = ByteBuffer.allocate(BUFFER_SIZE);
+        ByteBuffer bytes = ByteBuffer.allocate(20000);
         DatagramPacket receivePacket = new DatagramPacket(bytes.array(), bytes.array().length);
         try{
             socket.receive(receivePacket);
@@ -67,7 +72,7 @@ public class Client extends Thread {
             int attempts = MAX_ATTEMPTS;
             boolean success = false;
             for( ; attempts>0; attempts--) {
-                System.err.print("server response timeout exceeded, trying to reconnect. " + attempts+ " attempts left");
+                System.err.print("server response timeout exceeded, trying to reconnect. " + attempts+ " attempts left\n");
                 try{
                     socket.receive(receivePacket);
                     success = true;
@@ -100,8 +105,8 @@ public class Client extends Thread {
     }
 
     public void close(){
-        isRunning = false;
-        handler.exit();
-        socket.close();
+            isRunning = false;
+            handler.exit();
+            socket.close();
     }
 }

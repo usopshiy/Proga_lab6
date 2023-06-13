@@ -10,6 +10,8 @@ import java.net.*;
 import java.nio.channels.*;
 import java.nio.*;
 import java.time.Instant;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import exceptions.InvalidDataException;
 import exceptions.ServerException;
@@ -17,7 +19,7 @@ import file.FileHandler;
 import io.ConsoleInputHandler;
 import io.ServerUserInputHandler;
 
-public class Server extends Thread{
+public class Server extends Thread implements Closeable{
     private final int BUFFER_SIZE = 2^16;
     private RouteCollectionHandler collectionHandler;
     private FileHandler fileHandler;
@@ -46,6 +48,7 @@ public class Server extends Thread{
             }
             channel = DatagramChannel.open();
             channel.bind(new InetSocketAddress(port));
+            System.out.println(InetAddress.getLocalHost());
         }
         catch(AlreadyBoundException e){
             throw new ServerException("port is already bound");
@@ -54,7 +57,7 @@ public class Server extends Thread{
             throw new ConnectionException("invalid port");
         }
         catch(IOException e){
-            throw new ServerException("something went wrong during server initialization");
+            throw new ServerException("Something went wrong during server initialization");
         }
     }
 
@@ -63,26 +66,25 @@ public class Server extends Thread{
     }
 
     public RequestMsg receive() throws ConnectionException, InvalidDataException{
-        ByteBuffer buf = ByteBuffer.allocate(BUFFER_SIZE);
-        try {
-            clientAddress = (InetSocketAddress) channel.receive(buf);
-        }catch (ClosedChannelException e){
-            throw new ConnectionException("connection is closed!");
-        } catch(IOException e){
-            throw new ConnectionException("something went wrong during receiving request");
-        }
-        try{
-            ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(buf.array()));
-            return (RequestMsg) objectInputStream.readObject();
-        } catch(ClassNotFoundException|ClassCastException|IOException e){
-            throw new InvalidDataException("received bad data");
+        while(true) {
+            try {
+                ByteBuffer buf = ByteBuffer.allocate(20000);
+                clientAddress = (InetSocketAddress) channel.receive(buf);
+                ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(buf.array()));
+                RequestMsg msg = (RequestMsg) objectInputStream.readObject();
+                if(msg != null){
+                    return msg;
+                }
+            } catch (ClassNotFoundException | ClassCastException | IOException e) {
+                throw new InvalidDataException("something went wrong during receiving request");
+            }
         }
     }
 
     public void send(AnswerMsg response)throws ConnectionException{
         if (clientAddress == null) throw new ConnectionException("no such client address found");
         try{
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(BUFFER_SIZE);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(20000);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(response);
             channel.send(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()), clientAddress);
@@ -100,6 +102,7 @@ public class Server extends Thread{
                     RequestMsg commandMsg = receive();
                     if (commandMsg.getRoute() != null) {
                         commandMsg.getRoute().setCreationDate(java.util.Date.from(Instant.now()));
+                        commandMsg.getRoute().setId(UUID.randomUUID());
                     }
                     answerMsg = inputHandler.runCommand(commandMsg);
                 } catch (CommandException e) {
