@@ -7,6 +7,7 @@ import connection.RequestMsg;
 import connection.Server;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
+import exceptions.RecursiveScriptExecption;
 import file.FileHandler;
 
 public class ServerUserInputHandler extends UserInputHandler {
@@ -40,19 +41,20 @@ public class ServerUserInputHandler extends UserInputHandler {
     public AnswerMsg runCommand(RequestMsg msg){
         AnswerMsg res = new AnswerMsg();
         try {
-            String cmd = msg.getCommand();
+            String cmd = msg.getCommandName();
             if(!getMap().containsKey(cmd)){
                 throw new InvalidDataException("no such command exist");
             }
             if(msg.getRoute() != null){
-                getMap().get(msg.getCommand()).execute(msg.getRoute());
+                res = getMap().get(msg.getCommandName()).execute(msg.getRoute());
             }
             else {
-                getMap().get(msg.getCommand()).execute(msg.getArg());
+                res = getMap().get(msg.getCommandName()).execute(msg.getStringArg());
             }
         } catch (CommandException | InvalidDataException e){
             ExceptionWrapper.outException(e.getMessage());
         }
+        System.out.println(res.getMsg());
         return res;
     }
 
@@ -68,12 +70,30 @@ public class ServerUserInputHandler extends UserInputHandler {
         }
     }
 
-    public void exit(){
+    public String exit(){
         super.setRunning(false);
         server.close();
+        return "Exiting programm";
     }
     @Override
     public void scriptMode(String path) {
+        super.setPath(path);
+        super.setCurrentHandler(new FileInputHandler(path));
+        super.setRunning(true);
+        while(super.isRunning() && super.getCurrentHandler().getScanner().hasNextLine()){
+            CommandWrapper commandMsg = super.getCurrentHandler().readCommand();
+            RequestMsg msg = new RequestMsg(commandMsg.getCommand(), commandMsg.getArg(), null);
+            AnswerMsg answerMsg = runCommand(msg);
+        }
+    }
 
+    @Override
+    public String executeScript(String arg) throws RecursiveScriptExecption {
+        if (getScriptStack().contains(arg))throw new RecursiveScriptExecption();
+        getScriptStack().add(arg);
+        ServerUserInputHandler process = new ServerUserInputHandler(server, new FileInputHandler(arg));
+        process.scriptMode(arg);
+        getScriptStack().pop();
+        return "script successfully executed";
     }
 }

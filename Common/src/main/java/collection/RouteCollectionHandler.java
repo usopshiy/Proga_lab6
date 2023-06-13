@@ -89,9 +89,10 @@ public class RouteCollectionHandler {
     /**
      * clears collection
      */
-    public void clear(){
+    public String clear(){
         collection.clear();
         uniqueIds.clear();
+        return ("Cleared collection");
     }
 
     /**
@@ -107,11 +108,10 @@ public class RouteCollectionHandler {
      * adds element to collection
      * @param route
      */
-    public void add(Route route){
+    public String add(Route route){
         uniqueIds.add(route.getId());
         collection.add(route);
-        System.out.print("added element: ");
-        System.out.println(route);
+        return "added element: " + route;
     }
 
     /**
@@ -149,14 +149,15 @@ public class RouteCollectionHandler {
      * removes object from collection with given id
      * @param id
      */
-    public void removeByID(UUID id){
+    public String removeByID(UUID id){
         for(Route route : collection){
             if(route.getId().equals(id)){
                 collection.remove(route);
                 uniqueIds.remove(id);
-                System.out.println("successfully removed route with id: " + id);
+                return "successfully removed route with id: " + id;
             }
         }
+        return "";
     }
 
     /**
@@ -164,21 +165,23 @@ public class RouteCollectionHandler {
      * @param id
      * @param route
      */
-    public void updateByID(UUID id, Route route){
+    public String updateByID(UUID id, Route route){
         for(Route cRoute : collection){
             if(cRoute.getId().equals(id)){
                 collection.remove(cRoute);
                 collection.add(route);
-                System.out.println("successfully updated route with id: " + id);
+                return "successfully updated route with id: " + id;
             }
         }
+        return "";
     }
 
     /**
      * Groups objects by field "from" and outputs it into standard out
      */
-    public void groupCountingByFrom(){
+    public String groupCountingByFrom(){
         HashMap<Location, AtomicInteger> map = new HashMap<>();
+        StringBuilder ans = new StringBuilder();
         for (Route route : collection){
             Location from = route.getFrom();
             if (map.containsKey(from)){
@@ -190,15 +193,16 @@ public class RouteCollectionHandler {
         for (Map.Entry<Location, AtomicInteger> pair : map.entrySet()) {
             Location location = pair.getKey();
             int quantity = map.get(location).intValue();
-            System.out.println(location + ": " + quantity);
+            ans.append(location).append(": ").append(quantity).append('\n');
         }
+        return ans.toString();
     }
 
     /**
      * gives info about collection
      */
-    public void info(){
-        System.out.println("Collection type: LinkedHashSet of Routes\n Creation date: " + DateConverter.dateToString(initDate) + "\nElements in collection: " + collection.size());
+    public String info(){
+        return "Collection type: LinkedHashSet of Routes\n Creation date: " + DateConverter.dateToString(initDate) + "\nElements in collection: " + collection.size();
     }
 
     /**
