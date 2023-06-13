@@ -1,5 +1,6 @@
 package commands;
 
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
@@ -14,9 +15,10 @@ public class Help implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
         map.keySet()
                 .forEach(s -> map.get(s).outDescription());
+        return new AnswerMsg();
     }
 
     @Override

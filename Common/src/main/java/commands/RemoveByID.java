@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
@@ -19,7 +20,7 @@ public class RemoveByID implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
         if (!collectionHandler.validateID((String) arg)){
             throw new InvalidDataException("Invalid id");
         }
@@ -30,7 +31,7 @@ public class RemoveByID implements Command{
         if(collectionHandler.checkID(id)){
             throw new CommandException("id is not present in collection!");
         }
-        collectionHandler.removeByID(id);
+        return new AnswerMsg(collectionHandler.removeByID(id));
     }
 
     @Override

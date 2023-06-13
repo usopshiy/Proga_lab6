@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import data.Route;
 import exceptions.CommandException;
@@ -21,14 +22,16 @@ public class Add implements  Command {
         this.inputHandler = inputHandler;
     }
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
+        AnswerMsg msg = new AnswerMsg();
         if(arg != null && arg.getClass().equals(Route.class)) {
-            collectionHandler.add((Route)arg);
+            msg.setMsg(collectionHandler.add((Route)arg));
         }
         else {
             assert collectionHandler != null;
-            collectionHandler.add(inputHandler.readRoute());
+             msg.setMsg((collectionHandler.add(inputHandler.readRoute())));
         }
+        return msg;
     }
 
     @Override
@@ -39,6 +42,6 @@ public class Add implements  Command {
 
     @Override
     public RequestMsg makeRequest(String arg) throws InvalidDataException {
-        return new RequestMsg("add", arg, inputHandler.readRoute());
+        return new RequestMsg("add", "", inputHandler.readRoute());
     }
 }

@@ -1,8 +1,8 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
-import data.Route;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
 import static utils.ConsoleColors.*;
@@ -18,11 +18,13 @@ public class Show implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
         if(collectionHandler.getCollection().isEmpty()){
             throw new CommandException("Collection is empty! nothing to show yet");
         }
-        collectionHandler.getCollection().forEach(s -> System.out.println(s));
+        StringBuilder k = new StringBuilder();
+        collectionHandler.getCollection().forEach(k::append);
+        return new AnswerMsg(k.toString());
     }
 
     @Override

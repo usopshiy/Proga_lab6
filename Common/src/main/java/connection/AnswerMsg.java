@@ -1,6 +1,5 @@
 package connection;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 public class AnswerMsg implements Serializable {
@@ -9,6 +8,10 @@ public class AnswerMsg implements Serializable {
 
     public AnswerMsg(){
         msg = "";
+    }
+
+    public AnswerMsg(String s){
+        msg = s;
     }
 
     public void setMsg(Object o){

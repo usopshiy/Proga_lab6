@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
@@ -16,8 +17,8 @@ public class Info implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
-        collectionHandler.info();
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
+        return new AnswerMsg(collectionHandler.info());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import data.Route;
 import exceptions.CommandException;
@@ -24,7 +25,7 @@ public class UpdateByID implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
         if (collectionHandler.validateID((String) arg)) {
             UUID id = UUID.fromString((String) arg);
             if (collectionHandler.getCollection().isEmpty()) {
@@ -35,7 +36,7 @@ public class UpdateByID implements Command{
             }
             Route route = inputHandler.readRoute();
             route.setId(id);
-            collectionHandler.updateByID(id, route);
+            return new AnswerMsg(collectionHandler.updateByID(id, route));
         }
         else throw new InvalidDataException("Invalid id");
     }

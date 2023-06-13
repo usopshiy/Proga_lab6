@@ -1,8 +1,8 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
-import data.Route;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
 import static utils.ConsoleColors.*;
@@ -18,7 +18,7 @@ public class RemoveAnyByDistance implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
         Double dist = (double) 0;
         if(arg != null) {
             try {
@@ -28,12 +28,14 @@ public class RemoveAnyByDistance implements Command{
             }
             if(dist <= 1){throw new InvalidDataException("distance must be greater then 1");}
         }
-        for(Route route : collectionHandler.getCollection()){
-            if(route.getDistance().equals(dist)){
-                collectionHandler.getCollection().remove(route);
-                break;
-            }
-        }
+        Double finalDist = dist;
+        Long count = collectionHandler.getCollection().stream()
+                        .filter(s -> s.getDistance().equals(finalDist))
+                        .count();
+        collectionHandler.getCollection().stream()
+                .filter(s -> s.getDistance().equals(finalDist))
+                .forEach(s -> collectionHandler.getCollection().remove(s));
+        return new AnswerMsg("deleted " + count + " elements");
     }
 
     @Override

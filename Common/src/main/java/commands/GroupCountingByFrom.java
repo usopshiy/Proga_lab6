@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
@@ -17,11 +18,11 @@ public class GroupCountingByFrom implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
         if (collectionHandler.getCollection().isEmpty()) {
             throw new CommandException("collection is empty!");
         }
-        collectionHandler.groupCountingByFrom();
+        return new AnswerMsg(collectionHandler.groupCountingByFrom());
     }
 
     @Override

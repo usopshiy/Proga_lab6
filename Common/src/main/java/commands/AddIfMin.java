@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import data.Route;
 import exceptions.CommandException;
@@ -24,8 +25,9 @@ public class AddIfMin  implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
         Route route = null;
+        AnswerMsg msg = new AnswerMsg();
         if(arg != null && arg.getClass().equals(Route.class)) {
             route = (Route) arg;
         }
@@ -37,8 +39,9 @@ public class AddIfMin  implements Command{
                 .filter(s -> finalRoute.compareTo(s) >= 0)
                 .count();
         if (count == 0){
-            collectionHandler.add(route);
+            msg.setMsg(collectionHandler.add(route));
         }
+        return msg;
     }
 
     @Override

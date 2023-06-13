@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
@@ -17,8 +18,8 @@ public class Clear implements Command {
         this.collectionHandler = collectionHandler;
     }
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
-        collectionHandler.clear();
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
+        return new AnswerMsg(collectionHandler.clear());
     }
 
     @Override

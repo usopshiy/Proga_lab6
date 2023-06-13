@@ -1,6 +1,7 @@
 package commands;
 
 import collection.RouteCollectionHandler;
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
@@ -17,10 +18,11 @@ public class Save implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
         if (!((arg == null) || arg.equals(""))) fileHandler.setPath((String) arg);
         if (collectionHandler.getCollection().isEmpty()) System.out.println("there is nothing to save yet");
         if (!fileHandler.write(collectionHandler.serializeCollection())) throw new CommandException("cannot save collection");
+        else return new AnswerMsg("successfully saved collection");
     }
 
     @Override

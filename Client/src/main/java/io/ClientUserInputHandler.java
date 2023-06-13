@@ -7,12 +7,15 @@ import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.ConnectionException;
 import exceptions.InvalidDataException;
+import exceptions.RecursiveScriptExecption;
+
 import java.util.ArrayList;
 
 public class ClientUserInputHandler extends UserInputHandler {
     private Client client;
     private ArrayList<String> clientExecutable;
     public ClientUserInputHandler(Client client){
+        super.setCurrentHandler(new ConsoleInputHandler());
         this.client = client;
         clientExecutable = new ArrayList<>();
         addCommand("help", new Help(super.getMap()));
@@ -39,7 +42,7 @@ public class ClientUserInputHandler extends UserInputHandler {
         clientExecutable.add(msg);
     }
 
-    @Override
+
     public void runCommand(String cmd, String arg) {
         try {
             if (hasCommand(cmd)) {
@@ -52,10 +55,42 @@ public class ClientUserInputHandler extends UserInputHandler {
                     AnswerMsg res = client.receive();
                     System.out.println(res);
                 }
-            }
+            }else System.out.println("no such command exist");
         }
         catch (CommandException | InvalidDataException | ConnectionException e){
             System.out.println(e.getMessage());
         }
     }
+
+    @Override
+    public String executeScript(String arg) throws RecursiveScriptExecption {
+        if (getScriptStack().contains(arg))throw new RecursiveScriptExecption();
+        getScriptStack().add(arg);
+        ClientUserInputHandler process = new ClientUserInputHandler(client);
+        process.scriptMode(arg);
+        getScriptStack().pop();
+        return "script successfully executed";
+    }
+
+    @Override
+    public void consoleMode() {
+        super.setCurrentHandler(new ConsoleInputHandler());
+        super.setRunning(true);
+        while (super.isRunning()) {
+            System.out.print("enter command (help to get command list): ");
+            CommandWrapper commandMsg = super.getCurrentHandler().readCommand();
+            runCommand(commandMsg.getCommand(), commandMsg.getArg());
+        }
+    }
+
+    @Override
+    public void scriptMode(String path) {
+        super.setPath(path);
+        super.setCurrentHandler(new FileInputHandler(path));
+        super.setRunning(true);
+        while(super.isRunning() && super.getCurrentHandler().getScanner().hasNextLine()){
+            CommandWrapper commandMsg = super.getCurrentHandler().readCommand();
+            runCommand(commandMsg.getCommand(), commandMsg.getArg());
+            }
+        }
 }

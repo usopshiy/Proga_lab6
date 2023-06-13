@@ -1,5 +1,6 @@
 package commands;
 
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import exceptions.CommandException;
 import exceptions.InvalidDataException;
@@ -13,8 +14,8 @@ public class Exit implements Command{
     }
 
     @Override
-    public void execute(Object arg) throws CommandException, InvalidDataException {
-        userInputHandler.exit();
+    public AnswerMsg execute(Object arg) throws CommandException, InvalidDataException {
+        return new AnswerMsg(userInputHandler.exit());
     }
 
     @Override
@@ -25,6 +26,6 @@ public class Exit implements Command{
 
     @Override
     public RequestMsg makeRequest(String arg) throws InvalidDataException {
-        return new RequestMsg("exit", arg, null);
+        return new RequestMsg("close", arg, null);
     }
 }

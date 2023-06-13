@@ -1,4 +1,5 @@
 package commands;
+import connection.AnswerMsg;
 import connection.RequestMsg;
 import exceptions.*;
 
@@ -12,7 +13,7 @@ public interface Command {
       * @throws CommandException
       * @throws InvalidDataException
       */
-     void execute(String arg) throws CommandException, InvalidDataException;
+     AnswerMsg execute(Object arg) throws CommandException, InvalidDataException;
 
      /**
       * method that gives description of command
